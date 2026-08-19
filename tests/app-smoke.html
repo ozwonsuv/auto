@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow">
+  <title>RDO app smoke test</title>
+</head>
+<body>
+  <p id="summary">실행 중...</p>
+  <iframe id="app" src="../index.html" title="RDO app" width="1000" height="1200"></iframe>
+  <script type="module">
+    const summary = document.querySelector('#summary');
+    const frame = document.querySelector('#app');
+    const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+    try {
+      await new Promise((resolve, reject) => {
+        frame.addEventListener('load', resolve, { once: true });
+        setTimeout(() => reject(new Error('앱 로드 시간 초과')), 10000);
+      });
+      const documentInFrame = frame.contentDocument;
+      const generateButton = documentInFrame.querySelector('#generateButton');
+      generateButton.click();
+
+      let completed = false;
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        await wait(1000);
+        const status = documentInFrame.querySelector('#status');
+        if (status.dataset.tone === 'error') {
+          throw new Error(status.textContent);
+        }
+        if (status.dataset.tone === 'success' && status.textContent.includes('생성 완료')) {
+          completed = true;
+          break;
+        }
+      }
+      if (!completed) {
+        throw new Error('오늘 생성 완료 시간 초과');
+      }
+
+      const challengeCount = documentInFrame.querySelectorAll('.dc-line').length;
+      const imageCount = documentInFrame.querySelectorAll('.dc-image img').length;
+      const copyTitleButton = documentInFrame.querySelector('#copyTitleButton');
+      const copyBodyButton = documentInFrame.querySelector('#copyBodyButton');
+      const copyTitleEnabled = !copyTitleButton.disabled;
+      const copyBodyEnabled = !copyBodyButton.disabled;
+      if (challengeCount < 22 || imageCount !== 2 || !copyTitleEnabled || !copyBodyEnabled) {
+        throw new Error(`DOM 검증 실패: lines=${challengeCount}, images=${imageCount}, title=${copyTitleEnabled}, body=${copyBodyEnabled}`);
+      }
+
+      let copiedTitle = '';
+      let copiedItems = [];
+      Object.defineProperty(frame.contentWindow.navigator, 'clipboard', {
+        configurable: true,
+        value: {
+          writeText: async (value) => { copiedTitle = value; },
+          write: async (items) => { copiedItems = items; }
+        }
+      });
+      Object.defineProperty(frame.contentWindow, 'ClipboardItem', {
+        configurable: true,
+        value: class ClipboardItemMock {
+          constructor(data) { this.data = data; }
+        }
+      });
+
+      copyTitleButton.click();
+      await wait(0);
+      if (copiedTitle !== '한눈에 보는 오늘의 도전 + 마담 위치') {
+        throw new Error(`제목 복사값 오류: ${copiedTitle}`);
+      }
+
+      copyBodyButton.click();
+      await wait(0);
+      const copiedItem = copiedItems[0];
+      const copiedHtml = await copiedItem.data['text/html'].text();
+      const copiedText = await copiedItem.data['text/plain'].text();
+      if (!copiedHtml.includes('class="dc-post"') || !copiedHtml.includes('<img src="https://dcimg') || !copiedHtml.includes('challenge-link')) {
+        throw new Error('HTML 복사 데이터에 본문, 웹 이미지 또는 링크가 없습니다.');
+      }
+      if (!copiedText.includes('[일반]') || !copiedText.includes('마담나자르 위치')) {
+        throw new Error('일반 텍스트 복사 데이터가 올바르지 않습니다.');
+      }
+
+      summary.textContent = '1/1 app smoke tests passed';
+      summary.dataset.failed = '0';
+    } catch (error) {
+      summary.textContent = `0/1 app smoke tests passed - ${error.message}`;
+      summary.dataset.failed = '1';
+    }
+  </script>
+</body>
+</html>

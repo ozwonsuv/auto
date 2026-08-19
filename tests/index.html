@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>RDO web tests</title>
+  <style>
+    body { margin: 32px; color: #171612; background: #f4f0e8; font: 15px/1.6 Consolas, "Malgun Gothic", monospace; }
+    main { max-width: 900px; margin: auto; padding: 24px; background: #fff; border: 1px solid #c9c0af; }
+    h1 { margin-top: 0; }
+    li { margin: 7px 0; }
+    .pass { color: #17643d; }
+    .fail { color: #a12620; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>RDO web tests</h1>
+    <p id="summary">실행 중...</p>
+    <ol id="results"></ol>
+  </main>
+  <script type="module" src="./tests.js"></script>
+</body>
+</html>

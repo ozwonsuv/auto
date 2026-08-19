@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="light">
+  <title>오늘의 도전</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="identity">
+        <span class="eyebrow">RED DEAD ONLINE</span>
+        <h1>오늘의 도전</h1>
+      </div>
+      <div class="actions" aria-label="게시물 작업">
+        <button id="generateButton" class="button button-primary" type="button">오늘 생성</button>
+        <button id="copyTitleButton" class="button" type="button" disabled>제목 복사</button>
+        <button id="copyBodyButton" class="button" type="button" disabled>본문 전체 복사(웹 이미지 포함)</button>
+      </div>
+      <p id="status" class="status" data-tone="neutral" role="status" aria-live="polite"></p>
+    </header>
+
+    <section id="preview" class="preview" aria-labelledby="previewTitle" hidden>
+      <div class="preview-heading">
+        <div>
+          <span class="eyebrow">PREVIEW</span>
+          <h2 id="previewTitle">게시글 미리보기</h2>
+        </div>
+        <p id="postMeta" class="post-meta"></p>
+      </div>
+      <p id="fallbackNotice" class="fallback-notice" hidden></p>
+      <article id="postContent" class="post-frame"></article>
+    </section>
+  </main>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
