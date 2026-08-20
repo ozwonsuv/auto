@@ -1,10 +1,10 @@
 import {
-  RdoDataError,
+  DataSourceError,
   buildPlainText,
   buildPostFragmentHtml,
   buildPostModel,
   getExpectedApiDate
-} from './rdo-core.js';
+} from './core.js';
 
 const ENDPOINTS = {
   dailies: 'https://pepegapi.jeanropke.net/v3/rdo/dailies',
@@ -122,8 +122,8 @@ async function loadCurrentPost() {
       };
     } catch (error) {
       lastError = error;
-      const retryableDataError = error instanceof RdoDataError && error.code === 'UPSTREAM_NOT_READY';
-      const retryableNetworkError = !(error instanceof RdoDataError);
+      const retryableDataError = error instanceof DataSourceError && error.code === 'UPSTREAM_NOT_READY';
+      const retryableNetworkError = !(error instanceof DataSourceError);
       if ((!retryableDataError && !retryableNetworkError) || attempt === MAX_LIVE_ATTEMPTS) {
         throw error;
       }
@@ -169,7 +169,7 @@ async function generatePost() {
     renderResult(result);
   } catch (error) {
     console.error(error);
-    const message = error instanceof RdoDataError ? error.message : `불러오기 실패: ${error.message}`;
+    const message = error instanceof DataSourceError ? error.message : `불러오기 실패: ${error.message}`;
     setStatus(`${message} 잠시 후 다시 눌러 주세요.`, 'error');
   } finally {
     elements.generate.disabled = false;

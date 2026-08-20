@@ -1,4 +1,4 @@
-import { buildPostFragmentHtml, buildPostModel, getExpectedApiDate } from '../src/rdo-core.js';
+import { buildPostFragmentHtml, buildPostModel, getExpectedApiDate } from '../src/core.js';
 
 const summary = document.querySelector('#summary');
 const list = document.querySelector('#results');
@@ -98,4 +98,4 @@ for (const result of checks) {
 const failures = checks.filter((result) => !result.passed);
 summary.textContent = `${checks.length - failures.length}/${checks.length} live tests passed`;
 summary.dataset.failed = String(failures.length);
-window.__RDO_LIVE_TEST_RESULTS__ = { model, checks, failed: failures.length };
+window.__LIVE_TEST_RESULTS__ = { model, checks, failed: failures.length };

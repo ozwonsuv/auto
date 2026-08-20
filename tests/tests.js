@@ -1,5 +1,5 @@
 import {
-  RdoDataError,
+  DataSourceError,
   buildPlainText,
   buildPostFragmentHtml,
   buildPostModel,
@@ -7,7 +7,7 @@ import {
   normalizeGoalDisplay,
   normalizeText,
   resolveChallengeText
-} from '../src/rdo-core.js';
+} from '../src/core.js';
 
 const resultsElement = document.querySelector('#results');
 const summaryElement = document.querySelector('#summary');
@@ -115,7 +115,7 @@ await test('등록되지 않은 나자르 코드는 잘못된 이미지 생성 �
   } catch (error) {
     thrown = error;
   }
-  assert(thrown instanceof RdoDataError && thrown.code === 'UNKNOWN_NAZAR', '알 수 없는 나자르 차단 실패');
+  assert(thrown instanceof DataSourceError && thrown.code === 'UNKNOWN_NAZAR', '알 수 없는 나자르 차단 실패');
 });
 
 for (const result of results) {
@@ -128,4 +128,4 @@ for (const result of results) {
 const failed = results.filter((result) => !result.passed);
 summaryElement.className = failed.length === 0 ? 'pass' : 'fail';
 summaryElement.textContent = `${results.length - failed.length}/${results.length} tests passed`;
-window.__RDO_TEST_RESULTS__ = { total: results.length, failed: failed.length, results };
+window.__UNIT_TEST_RESULTS__ = { total: results.length, failed: failed.length, results };

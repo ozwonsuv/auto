@@ -1,7 +1,7 @@
-export class RdoDataError extends Error {
+export class DataSourceError extends Error {
   constructor(code, message, details = {}) {
     super(message);
-    this.name = 'RdoDataError';
+    this.name = 'DataSourceError';
     this.code = code;
     this.details = details;
   }
@@ -94,21 +94,21 @@ export function validateLiveState(dailyData, nazarData, now = new Date()) {
   const nazarCode = String(nazarData?.nazar ?? '');
 
   if (!Array.isArray(generalChallenges) || generalChallenges.length === 0) {
-    throw new RdoDataError('INCOMPLETE_DAILIES', '오늘의 도전 API 응답에 일반 도전 목록이 없습니다.', {
+    throw new DataSourceError('INCOMPLETE_DAILIES', '오늘의 도전 API 응답에 일반 도전 목록이 없습니다.', {
       expectedDate,
       apiDate,
       nazarApiDate
     });
   }
   if (!nazarCode) {
-    throw new RdoDataError('INCOMPLETE_NAZAR', '마담 나자르 API 응답에 위치 코드가 없습니다.', {
+    throw new DataSourceError('INCOMPLETE_NAZAR', '마담 나자르 API 응답에 위치 코드가 없습니다.', {
       expectedDate,
       apiDate,
       nazarApiDate
     });
   }
   if (apiDate !== expectedDate || nazarApiDate !== expectedDate) {
-    throw new RdoDataError(
+    throw new DataSourceError(
       'UPSTREAM_NOT_READY',
       `최신 데이터 대기 중입니다. 기준 ${expectedDate}, 도전 ${apiDate || '없음'}, 나자르 ${nazarApiDate || '없음'}`,
       { expectedDate, apiDate, nazarApiDate }
@@ -190,10 +190,10 @@ function applyFallbackOverride(section, text, rules) {
 
 function assertStaticData(challengeData, rules) {
   if (challengeData?.schemaVersion !== 1 || !challengeData?.sections) {
-    throw new RdoDataError('INVALID_CHALLENGE_DATA', '내장 도전 문구 데이터의 형식이 올바르지 않습니다.');
+    throw new DataSourceError('INVALID_CHALLENGE_DATA', '내장 도전 문구 데이터의 형식이 올바르지 않습니다.');
   }
   if (rules?.schemaVersion !== 1 || !rules?.nazarMappings) {
-    throw new RdoDataError('INVALID_RULES_DATA', '내장 게시물 규칙 데이터의 형식이 올바르지 않습니다.');
+    throw new DataSourceError('INVALID_RULES_DATA', '내장 게시물 규칙 데이터의 형식이 올바르지 않습니다.');
   }
 }
 
@@ -230,7 +230,7 @@ export function buildPostModel({ dailyData, nazarData, challengeData, translatio
   const difficulty = String(rules.roleDifficulty ?? 'hard');
   const roleSets = dailyData?.data?.[difficulty];
   if (!Array.isArray(roleSets)) {
-    throw new RdoDataError('INCOMPLETE_ROLES', `${difficulty} 직업 도전 목록이 없습니다.`);
+    throw new DataSourceError('INCOMPLETE_ROLES', `${difficulty} 직업 도전 목록이 없습니다.`);
   }
 
   const lines = [];
@@ -243,10 +243,10 @@ export function buildPostModel({ dailyData, nazarData, challengeData, translatio
   for (const roleSet of roleSets) {
     const section = getRoleKey(roleSet?.role);
     if (!SECTION_ORDER.includes(section) || section === 'general') {
-      throw new RdoDataError('UNKNOWN_ROLE', `알 수 없는 직업 코드입니다: ${String(roleSet?.role ?? '')}`);
+      throw new DataSourceError('UNKNOWN_ROLE', `알 수 없는 직업 코드입니다: ${String(roleSet?.role ?? '')}`);
     }
     if (!Array.isArray(roleSet?.challenges)) {
-      throw new RdoDataError('INCOMPLETE_ROLE_CHALLENGES', `${section} 도전 목록이 없습니다.`);
+      throw new DataSourceError('INCOMPLETE_ROLE_CHALLENGES', `${section} 도전 목록이 없습니다.`);
     }
 
     lines.push({ type: 'heading', section, text: String(rules.roleHeadings[section] ?? `[${section}]`) });
@@ -258,7 +258,7 @@ export function buildPostModel({ dailyData, nazarData, challengeData, translatio
   const nazarCode = liveState.nazarCode;
   const nazarMapping = rules.nazarMappings[nazarCode];
   if (!nazarMapping?.location || !nazarMapping?.imageUrl) {
-    throw new RdoDataError('UNKNOWN_NAZAR', `등록되지 않은 마담 나자르 위치입니다: ${nazarCode}`, { nazarCode });
+    throw new DataSourceError('UNKNOWN_NAZAR', `등록되지 않은 마담 나자르 위치입니다: ${nazarCode}`, { nazarCode });
   }
 
   const nazarLocation = String(nazarMapping.location);
