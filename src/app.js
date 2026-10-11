@@ -1,5 +1,6 @@
 import {
   DataSourceError,
+  adaptRdoGgLiveData,
   buildPlainText,
   buildPostFragmentHtml,
   buildPostModel,
@@ -9,6 +10,8 @@ import {
 const ENDPOINTS = {
   dailies: 'https://pepegapi.jeanropke.net/v3/rdo/dailies',
   nazar: 'https://pepegapi.jeanropke.net/v2/rdo/nazar',
+  rdoGgDailies: 'https://api.rdo.gg/challenges/hard.json',
+  rdoGgNazar: 'https://api.rdo.gg/nazar',
   translations: 'https://jeanropke.github.io/RDOMap/langs/ko.json',
   challenges: './data/challenges.json',
   rules: './data/rules.json'
@@ -16,6 +19,17 @@ const ENDPOINTS = {
 
 const MAX_LIVE_ATTEMPTS = 7;
 const RETRY_DELAY_MS = 10000;
+const RETRYABLE_DATA_CODES = new Set([
+  'UPSTREAM_NOT_READY',
+  'INCOMPLETE_DAILIES',
+  'INCOMPLETE_NAZAR',
+  'INCOMPLETE_ROLES',
+  'INCOMPLETE_RDO_GG_TIME',
+  'INCOMPLETE_RDO_GG_CHALLENGE',
+  'INCOMPLETE_RDO_GG_DAILIES',
+  'INCOMPLETE_RDO_GG_NAZAR',
+  'INCOMPLETE_RDO_GG_ROLES'
+]);
 
 const elements = {
   generate: document.querySelector('#generateButton'),
@@ -92,6 +106,47 @@ function loadStaticData() {
   return staticDataPromise;
 }
 
+function buildResult(dailyData, nazarData, staticData, source) {
+  return {
+    model: buildPostModel({
+      dailyData,
+      nazarData,
+      challengeData: staticData.challengeData,
+      translations: staticData.translations,
+      rules: staticData.rules,
+      now: new Date()
+    }),
+    rules: staticData.rules,
+    source
+  };
+}
+
+async function loadPrimaryResult(staticData) {
+  const [dailyData, nazarData] = await Promise.all([
+    fetchJson(ENDPOINTS.dailies, '오늘의 도전 API', { fresh: true }),
+    fetchJson(ENDPOINTS.nazar, '마담 나자르 API', { fresh: true })
+  ]);
+  return buildResult(dailyData, nazarData, staticData, 'primary');
+}
+
+async function loadBackupResult(staticData) {
+  setStatus('기본 데이터가 비어 있어 대체 소스를 확인하고 있습니다.', 'loading');
+  const [challengePayload, nazarPayload] = await Promise.all([
+    fetchJson(ENDPOINTS.rdoGgDailies, 'RDO.GG 오늘의 도전 API', { fresh: true }),
+    fetchJson(ENDPOINTS.rdoGgNazar, 'RDO.GG 마담 나자르 API', { fresh: true })
+  ]);
+  const { dailyData, nazarData } = adaptRdoGgLiveData(
+    challengePayload,
+    nazarPayload,
+    staticData.translations
+  );
+  return buildResult(dailyData, nazarData, staticData, 'rdo-gg');
+}
+
+function isRetryableLiveError(error) {
+  return !(error instanceof DataSourceError) || RETRYABLE_DATA_CODES.has(error.code);
+}
+
 async function loadCurrentPost() {
   const staticData = await loadStaticData();
   let lastError = null;
@@ -104,27 +159,20 @@ async function loadCurrentPost() {
       'loading'
     );
 
+    let primaryError = null;
     try {
-      const [dailyData, nazarData] = await Promise.all([
-        fetchJson(ENDPOINTS.dailies, '오늘의 도전 API', { fresh: true }),
-        fetchJson(ENDPOINTS.nazar, '마담 나자르 API', { fresh: true })
-      ]);
-      return {
-        model: buildPostModel({
-          dailyData,
-          nazarData,
-          challengeData: staticData.challengeData,
-          translations: staticData.translations,
-          rules: staticData.rules,
-          now: new Date()
-        }),
-        rules: staticData.rules
-      };
+      return await loadPrimaryResult(staticData);
+    } catch (error) {
+      primaryError = error;
+      console.warn('기본 API를 사용할 수 없어 RDO.GG로 전환합니다.', error);
+    }
+
+    try {
+      return await loadBackupResult(staticData);
     } catch (error) {
       lastError = error;
-      const retryableDataError = error instanceof DataSourceError && error.code === 'UPSTREAM_NOT_READY';
-      const retryableNetworkError = !(error instanceof DataSourceError);
-      if ((!retryableDataError && !retryableNetworkError) || attempt === MAX_LIVE_ATTEMPTS) {
+      console.warn('RDO.GG 대체 API도 아직 사용할 수 없습니다.', { primaryError, backupError: error });
+      if (!isRetryableLiveError(error) || attempt === MAX_LIVE_ATTEMPTS) {
         throw error;
       }
       await sleep(RETRY_DELAY_MS);
@@ -135,13 +183,14 @@ async function loadCurrentPost() {
 }
 
 function renderResult(result) {
-  const { model, rules } = result;
+  const { model, rules, source } = result;
   const fragmentHtml = buildPostFragmentHtml(model, rules);
   const plainText = buildPlainText(model);
   currentResult = { model, rules, fragmentHtml, plainText };
 
   elements.post.innerHTML = fragmentHtml;
-  elements.meta.textContent = `데이터 ${model.date} · 나자르 ${model.nazarLocation} · 생성 ${model.generatedAtKst} KST`;
+  const sourceText = source === 'rdo-gg' ? ' · 대체 소스 RDO.GG' : '';
+  elements.meta.textContent = `데이터 ${model.date} · 나자르 ${model.nazarLocation} · 생성 ${model.generatedAtKst} KST${sourceText}`;
   if (model.fallbacks.length > 0) {
     const fallbackNames = model.fallbacks.map((entry) => entry.text).join(', ');
     elements.fallback.textContent = `엑셀에 없던 ${model.fallbacks.length}개 도전은 공식 한국어 문구로 표시했습니다: ${fallbackNames}`;

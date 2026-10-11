@@ -1,5 +1,6 @@
 import {
   DataSourceError,
+  adaptRdoGgLiveData,
   buildPlainText,
   buildPostFragmentHtml,
   buildPostModel,
@@ -58,6 +59,44 @@ await test('문구와 목표값 정규화', () => {
 await test('한국 시간 15시 경계 날짜', () => {
   assert(getExpectedApiDate(new Date('2026-08-19T05:59:59Z')) === '2026-08-18', '15시 직전 날짜 오류');
   assert(getExpectedApiDate(new Date('2026-08-19T06:00:00Z')) === '2026-08-19', '15시 정각 날짜 오류');
+});
+
+await test('RDO.GG 대체 응답을 기존 도전 형식으로 변환', () => {
+  const startTime = Date.UTC(2026, 7, 19, 6, 0, 0) / 1000;
+  const challengePayload = {
+    startTime,
+    general: [{ title: 'MPGC_TEST_GENERAL', goal: 3 }],
+    bounty_hunter: [{ title: 'MPRC_TEST_BOUNTY', goal: 1 }],
+    trader: [{ title: 'MPRC_TEST_TRADER', goal: 2 }],
+    collector: [{ title: 'MPRC_TEST_COLLECTOR', goal: 3 }],
+    moonshiner: [{ title: 'MPRC_MOONSHINER_MONEY_MADE', goal: '$200.00' }],
+    naturalist: [{ title: 'MPRC_TEST_NATURALIST', goal: 1 }]
+  };
+  const adapted = adaptRdoGgLiveData(
+    challengePayload,
+    { startTime, id: 'MPSW_LOCATION_01' },
+    {
+      mpgc_test_general: '일반 테스트',
+      mprc_moonshiner_money_made: '밀주 판매로 획득한 돈'
+    }
+  );
+
+  assert(adapted.dailyData.date === '2026-08-19', '대체 도전 날짜 변환 실패');
+  assert(adapted.nazarData.date === '2026-08-19', '대체 나자르 날짜 변환 실패');
+  assert(adapted.nazarData.nazar === 'MPSW_LOCATION_01', '대체 나자르 코드 변환 실패');
+  assert(
+    adapted.dailyData.data.general.challenges[0].description.localizedFull === '0/3 일반 테스트',
+    '일반 도전 목표 변환 실패'
+  );
+  assert(
+    adapted.dailyData.data.hard[0].role === 'CHARACTER_RANK_BOUNTY_HUNTER',
+    '직업 코드 변환 실패'
+  );
+  assert(
+    adapted.dailyData.data.hard[3].challenges[0].description.localizedFull ===
+      '0￠/$200.00 밀주 판매로 획득한 돈',
+    '화폐 목표 변환 실패'
+  );
 });
 
 let historicalModel;

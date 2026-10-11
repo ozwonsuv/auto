@@ -1,4 +1,9 @@
-import { buildPostFragmentHtml, buildPostModel, getExpectedApiDate } from '../src/core.js';
+import {
+  adaptRdoGgLiveData,
+  buildPostFragmentHtml,
+  buildPostModel,
+  getExpectedApiDate
+} from '../src/core.js';
 
 const summary = document.querySelector('#summary');
 const list = document.querySelector('#results');
@@ -40,16 +45,36 @@ function loadImage(url) {
 
 let model;
 let rules;
+let liveSource = 'primary';
 await check('라이브 API와 정적 데이터 CORS 로드', async () => {
-  const [dailyData, nazarData, translations, challengeData, loadedRules] = await Promise.all([
-    fetchJson('https://pepegapi.jeanropke.net/v3/rdo/dailies'),
-    fetchJson('https://pepegapi.jeanropke.net/v2/rdo/nazar'),
+  const [translations, challengeData, loadedRules] = await Promise.all([
     fetchJson('https://jeanropke.github.io/RDOMap/langs/ko.json'),
     fetchJson('../data/challenges.json'),
     fetchJson('../data/rules.json')
   ]);
   rules = loadedRules;
-  model = buildPostModel({ dailyData, nazarData, translations, challengeData, rules, now: new Date() });
+  try {
+    const [dailyData, nazarData] = await Promise.all([
+      fetchJson('https://pepegapi.jeanropke.net/v3/rdo/dailies'),
+      fetchJson('https://pepegapi.jeanropke.net/v2/rdo/nazar')
+    ]);
+    model = buildPostModel({ dailyData, nazarData, translations, challengeData, rules, now: new Date() });
+  } catch {
+    const [challengePayload, nazarPayload] = await Promise.all([
+      fetchJson('https://api.rdo.gg/challenges/hard.json'),
+      fetchJson('https://api.rdo.gg/nazar')
+    ]);
+    const adapted = adaptRdoGgLiveData(challengePayload, nazarPayload, translations);
+    model = buildPostModel({
+      dailyData: adapted.dailyData,
+      nazarData: adapted.nazarData,
+      translations,
+      challengeData,
+      rules,
+      now: new Date()
+    });
+    liveSource = 'rdo-gg';
+  }
   if (model.date !== getExpectedApiDate(new Date())) {
     throw new Error(`날짜 불일치: ${model.date}`);
   }
@@ -98,4 +123,4 @@ for (const result of checks) {
 const failures = checks.filter((result) => !result.passed);
 summary.textContent = `${checks.length - failures.length}/${checks.length} live tests passed`;
 summary.dataset.failed = String(failures.length);
-window.__LIVE_TEST_RESULTS__ = { model, checks, failed: failures.length };
+window.__LIVE_TEST_RESULTS__ = { model, liveSource, checks, failed: failures.length };

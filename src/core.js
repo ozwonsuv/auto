@@ -16,6 +16,8 @@ const SECTION_ORDER = [
   'naturalist'
 ];
 
+const RDO_GG_ROLE_SECTIONS = SECTION_ORDER.filter((section) => section !== 'general');
+
 export function normalizeText(value) {
   return String(value ?? '')
     .replaceAll('\u00a0', ' ')
@@ -84,6 +86,83 @@ export function getExpectedApiDate(now = new Date()) {
 export function formatKstTimestamp(now = new Date()) {
   const kst = getKstParts(now);
   return `${kst.date} ${String(kst.hour).padStart(2, '0')}:${String(kst.minute).padStart(2, '0')}:${String(kst.second).padStart(2, '0')}`;
+}
+
+function getRdoGgApiDate(payload, label) {
+  const startTime = Number(payload?.startTime);
+  if (!Number.isFinite(startTime) || startTime <= 0) {
+    throw new DataSourceError('INCOMPLETE_RDO_GG_TIME', `${label} 응답에 시작 시간이 없습니다.`);
+  }
+  return getExpectedApiDate(new Date(startTime * 1000));
+}
+
+function getRdoGgProgress(goal) {
+  const goalText = String(goal ?? '').trim();
+  if (!goalText) {
+    return '';
+  }
+  return goalText.startsWith('$') ? `0￠/${goalText}` : `0/${goalText}`;
+}
+
+function adaptRdoGgChallenge(challenge, section, translations) {
+  const challengeKey = String(challenge?.title ?? '').trim();
+  const progress = getRdoGgProgress(challenge?.goal);
+  if (!challengeKey || !progress) {
+    throw new DataSourceError(
+      'INCOMPLETE_RDO_GG_CHALLENGE',
+      `RDO.GG ${section} 도전 항목의 형식이 올바르지 않습니다.`
+    );
+  }
+
+  const localized = String(translations?.[challengeKey.toLocaleLowerCase('en-US')] ?? challengeKey);
+  return {
+    description: {
+      label: challengeKey,
+      localized,
+      localizedFull: `${progress} ${localized}`
+    }
+  };
+}
+
+export function adaptRdoGgLiveData(challengePayload, nazarPayload, translations = {}) {
+  const dailyDate = getRdoGgApiDate(challengePayload, 'RDO.GG 오늘의 도전');
+  const nazarDate = getRdoGgApiDate(nazarPayload, 'RDO.GG 마담 나자르');
+  const general = challengePayload?.general;
+  const nazarCode = String(nazarPayload?.id ?? '').trim();
+
+  if (!Array.isArray(general) || general.length === 0) {
+    throw new DataSourceError('INCOMPLETE_RDO_GG_DAILIES', 'RDO.GG 응답에 일반 도전 목록이 없습니다.');
+  }
+  if (!nazarCode) {
+    throw new DataSourceError('INCOMPLETE_RDO_GG_NAZAR', 'RDO.GG 응답에 마담 나자르 위치가 없습니다.');
+  }
+
+  const roleSets = RDO_GG_ROLE_SECTIONS.map((section) => {
+    const challenges = challengePayload?.[section];
+    if (!Array.isArray(challenges) || challenges.length === 0) {
+      throw new DataSourceError('INCOMPLETE_RDO_GG_ROLES', `RDO.GG 응답에 ${section} 도전 목록이 없습니다.`);
+    }
+    return {
+      role: `CHARACTER_RANK_${section.toUpperCase()}`,
+      challenges: challenges.map((challenge) => adaptRdoGgChallenge(challenge, section, translations))
+    };
+  });
+
+  return {
+    dailyData: {
+      date: dailyDate,
+      data: {
+        general: {
+          challenges: general.map((challenge) => adaptRdoGgChallenge(challenge, 'general', translations))
+        },
+        hard: roleSets
+      }
+    },
+    nazarData: {
+      date: nazarDate,
+      nazar: nazarCode
+    }
+  };
 }
 
 export function validateLiveState(dailyData, nazarData, now = new Date()) {
