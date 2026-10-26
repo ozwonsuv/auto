@@ -2,7 +2,7 @@
 
 ozwonsuv
 
-**[EXE 바로 다운로드](https://github.com/ozwonsuv/auto/raw/refs/heads/main/rdrg-tts/RdrgNativeTts.exe)**
+**[EXE 바로 다운로드](https://github.com/ozwonsuv/auto/raw/refs/heads/main/rdrg-tts/%EB%A0%88%EA%B0%A4%20TTS%20%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%20Lite.exe)**
 
 Windows 11 x64용 단일 EXE입니다. 파일 크기: 2,015,232바이트(약 2.02MB).
 음성 모델이나 별도 앱 런타임 설치가 필요하지 않습니다. 음성 서비스에는 인터넷 연결이 필요하며, 게임 마이크 송출에는 VB-Audio VB-CABLE 기본 장치가 별도로 필요합니다.
@@ -14,3 +14,5 @@ Windows 11 x64용 단일 EXE입니다. 파일 크기: 2,015,232바이트(약 2.0
 라이선스 전문과 음성 모듈 소스·빌드 및 교체 방법은 EXE에 포함되어 있으며 설정 하단에서 확인하거나 저장할 수 있습니다.
 
 웹페이지의 다운로드 버튼에는 위 고정 주소를 사용하면 됩니다. `version.txt`와 `SHA256SUMS.txt`는 배포 확인용이며 따로 받을 필요는 없습니다.
+
+배포 파일명은 `레갤 TTS 프로그램 Lite.exe`입니다. 기존 `RdrgNativeTts.exe` 다운로드 주소도 같은 파일로 유지합니다. 화면 이름과 버전, 프로그램 내용은 기존 v1.0과 같습니다.
