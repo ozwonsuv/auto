@@ -1,5 +1,5 @@
-# RDRG TTS PROGRAM Lite v1.5.1
+# RDRG TTS PROGRAM Lite
 
 ozwonsuv
 
-[다운로드](https://github.com/ozwonsuv/auto/raw/refs/heads/main/rdrg-tts/RdrgNativeTts.exe) · [사용법](https://gall.dcinside.com/mgallery/board/view/?id=rdr2&no=641364&page=1)
+파일 검사 결과를 확인하는 동안 다운로드를 잠시 중단합니다.
