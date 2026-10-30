@@ -1,0 +1,779 @@
+{
+  "date": "2026-10-30",
+  "data": {
+    "general": {
+      "id": "14e6afa827334b7db80470d899aa0ef3",
+      "templateId": "FEATURE_PM_DAILY_CHALLENGES",
+      "role": "CHARACTER_RANK",
+      "startTime": 1793340000,
+      "endTime": 1793426400,
+      "challenges": [
+        {
+          "id": "MPDC_AnimalsSkinned_Turkey_00",
+          "desiredGoal": 3,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_TURKEYS_SKINNED",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Turkeys skinned",
+            "localizedFull": "0/3 Turkeys skinned"
+          }
+        },
+        {
+          "id": "MPDC_Craft_Breakdown_SmallAnimal_00",
+          "desiredGoal": 5,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_CRAFT_BROKE_DOWN_SMALL_ANIMALS",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Small animal carcasses broken down",
+            "localizedFull": "0/5 Small animal carcasses broken down"
+          }
+        },
+        {
+          "id": "MPDC_Dynamic_DefendCampsite_Win_00",
+          "desiredGoal": 1,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_DYNAMIC_CAMPSITE_DEFEND",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Defended a campsite",
+            "localizedFull": "0/1 Defended a campsite"
+          }
+        },
+        {
+          "id": "MPDC_EnemiesKilled_GatlingMaxim_00",
+          "desiredGoal": 3,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_ENEMIES_KILLED_GATLING_MAXIM",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Non-player enemies killed with a Maxim Gun",
+            "localizedFull": "0/3 Non-player enemies killed with a Maxim Gun"
+          }
+        },
+        {
+          "id": "MPDC_HerbsPicked_GoldenCurrant_00",
+          "desiredGoal": 5,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_GOLDEN_CURRANT_PICKED",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Golden Currants picked",
+            "localizedFull": "0/5 Golden Currants picked"
+          }
+        },
+        {
+          "id": "MPDC_Horse_TrampleKills_00",
+          "desiredGoal": 5,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_HORSE_ANIMALS_TRAMPLED",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Animals trampled",
+            "localizedFull": "0/5 Animals trampled"
+          }
+        },
+        {
+          "id": "MPDC_PlayersKilled_Bow_Fme_00",
+          "desiredGoal": 3,
+          "goalType": "INT",
+          "displayType": "DISPLAY_DEFAULT",
+          "description": {
+            "label": "MPGC_PLAYERS_KILLED_BOW_FME",
+            "formatLabel": "ACMP_DC_PLAYER_MENU",
+            "localized": "Player kills with a Bow in Free Roam Events",
+            "localizedFull": "0/3 Player kills with a Bow in Free Roam Events"
+          }
+        }
+      ]
+    },
+    "easy": [
+      {
+        "id": "a0bdd1057b8b4903b4d2e1b97cc9131a",
+        "templateId": "FEATURE_PM_DAILY_ROLE_BOUNTY_HUNTER_CHALLENGES",
+        "role": "CHARACTER_RANK_BOUNTY_HUNTER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Bounty_Location_Lemoyne_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_LOCATION_LEMOYNE",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounties brought in from Lemoyne posters",
+              "localizedFull": "0/1 Bounties brought in from Lemoyne posters"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_Target_Looted_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_TARGETS_LOOTED",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty targets looted",
+              "localizedFull": "0/1 Bounty targets looted"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_Used_Reinforced_Lasso_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_USED_REINFORCED_LASSO",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty targets hogtied with a Reinforced Lasso",
+              "localizedFull": "0/1 Bounty targets hogtied with a Reinforced Lasso"
+            }
+          }
+        ]
+      },
+      {
+        "id": "d83c0aee3d544641983f106f730be302",
+        "templateId": "FEATURE_PM_DAILY_ROLE_TRADER_CHALLENGES",
+        "role": "CHARACTER_RANK_TRADER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Trader_Goods_Sold_Local_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_GOODS_SOLD_LOCAL",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Goods sold to local buyer",
+              "localizedFull": "0/1 Goods sold to local buyer"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Supplies_Donated_Animal_Small_Easy_00",
+            "desiredGoal": 3,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_SUPPLIES_DONATED_ANIMAL_SMALL",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Small animal carcasses donated to Cripps",
+              "localizedFull": "0/3 Small animal carcasses donated to Cripps"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Travel_Wagon_Easy_00",
+            "desiredGoal": 1609.5,
+            "goalType": "FLOAT",
+            "displayType": "DISPLAY_FEET",
+            "description": {
+              "label": "MPRC_TRADER_TRAVEL_WAGON",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Distance Delivery Wagon traveled on mission",
+              "localizedFull": "0/5280 Distance Delivery Wagon traveled on mission"
+            }
+          }
+        ]
+      },
+      {
+        "id": "13eac7cbd0db4ea08bc87d10b47b44b3",
+        "templateId": "FEATURE_PM_DAILY_ROLE_COLLECTOR_CHALLENGES",
+        "role": "CHARACTER_RANK_COLLECTOR",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Collector_Antique_Alcohol_Drunk_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_ANTIQUE_ALCOHOL_DRUNK",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Antique Alcohol drunk",
+              "localizedFull": "0/1 Antique Alcohol drunk"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Items_Sold_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_ITEMS_SOLD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collectibles sold to Madam Nazar",
+              "localizedFull": "0/1 Collectibles sold to Madam Nazar"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Used_Shovel_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_USED_SHOVEL",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collectibles found with a Shovel",
+              "localizedFull": "0/1 Collectibles found with a Shovel"
+            }
+          }
+        ]
+      },
+      {
+        "id": "39afc04de0334a32afd65bc4702611cf",
+        "templateId": "FEATURE_PM_DAILY_ROLE_MOONSHINER_CHALLENGES",
+        "role": "CHARACTER_RANK_MOONSHINER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Moonshiner_Bar_Changed_Decor_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_MOONSHINER_BAR_CHANGED_DECOR",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Moonshine Bar - Changed décor",
+              "localizedFull": "0/1 Moonshine Bar - Changed décor"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Recipe_Completed_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_MOONSHINER_RECIPE_COMPLETED_EASY",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Completed regular or better moonshine recipe",
+              "localizedFull": "0/1 Completed regular or better moonshine recipe"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Travel_Wagon_Easy_00",
+            "desiredGoal": 1609.5,
+            "goalType": "FLOAT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_MOONSHINER_TRAVEL_WAGON",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Distance Moonshine Wagon traveled on mission",
+              "localizedFull": "0/1609 Distance Moonshine Wagon traveled on mission"
+            }
+          }
+        ]
+      },
+      {
+        "id": "f47dc37686ad4200a21568f49f69dc06",
+        "templateId": "FEATURE_PM_DAILY_ROLE_NATURALIST_CHALLENGES",
+        "role": "CHARACTER_RANK_NATURALIST",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Naturalist_Animals_NotKilled_Timed_Easy_00",
+            "desiredGoal": 1440000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_AS_BOOL",
+            "description": {
+              "label": "MPRC_NATURALIST_DONT_KILL_ANIMALS_EASY",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Don't kill an animal for 12 game hours",
+              "localizedFull": "0/1 Don't kill an animal for 12 game hours"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Crafted_Blending_Tonic_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_CRAFTED_BLENDING_TONIC",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Blending Tonics crafted or used",
+              "localizedFull": "0/1 Blending Tonics crafted or used"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Photo_Animal_Legendary_Easy_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_PHOTO_ANIMAL_LEGENDARY",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Legendary Animals photographed",
+              "localizedFull": "0/1 Legendary Animals photographed"
+            }
+          }
+        ]
+      }
+    ],
+    "med": [
+      {
+        "id": "9dacb1cd24ef458cab36d38cef63f7b9",
+        "templateId": "FEATURE_PM_DAILY_ROLE_BOUNTY_HUNTER_CHALLENGES",
+        "role": "CHARACTER_RANK_BOUNTY_HUNTER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Bounty_General_Delivered_Med_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_GENERAL_DELIVERED",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty targets brought in",
+              "localizedFull": "0/2 Bounty targets brought in"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_General_Delivered_Multi_Target_Med_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_GENERAL_DELIVERED_MULTI_TARGET",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "More than one bounty target brought in at once",
+              "localizedFull": "0/2 More than one bounty target brought in at once"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_Location_Lemoyne_Med_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_LOCATION_LEMOYNE",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounties brought in from Lemoyne posters",
+              "localizedFull": "0/2 Bounties brought in from Lemoyne posters"
+            }
+          }
+        ]
+      },
+      {
+        "id": "d3088ef0622e49efb34339dfb4b09fb3",
+        "templateId": "FEATURE_PM_DAILY_ROLE_TRADER_CHALLENGES",
+        "role": "CHARACTER_RANK_TRADER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Trader_Money_Made_Med_00",
+            "desiredGoal": 10000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_CASH",
+            "description": {
+              "label": "MPRC_TRADER_MONEY_MADE",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Money made from trading",
+              "localizedFull": "0¢/$100.00 Money made from trading"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Stew_Recipe_Completed_Med_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_STEW_RECIPE_COMPLETED_SUPERIOR",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Superior Quality Camp Stew recipes completed",
+              "localizedFull": "0/1 Superior Quality Camp Stew recipes completed"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Supplies_Donated_Animal_Medium_Med_00",
+            "desiredGoal": 5,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_SUPPLIES_DONATED_ANIMAL_MEDIUM",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Medium animal carcasses donated to Cripps",
+              "localizedFull": "0/5 Medium animal carcasses donated to Cripps"
+            }
+          }
+        ]
+      },
+      {
+        "id": "648159b458994e669251cbef430bb13e",
+        "templateId": "FEATURE_PM_DAILY_ROLE_COLLECTOR_CHALLENGES",
+        "role": "CHARACTER_RANK_COLLECTOR",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Collector_Bird_Eggs_Med_00",
+            "desiredGoal": 3,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_BIRD_EGGS_FOUND",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bird Eggs found",
+              "localizedFull": "0/3 Bird Eggs found"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Items_Looted_Med_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_ITEMS_LOOTED_ENEMY",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collectibles looted from non-player enemies",
+              "localizedFull": "0/2 Collectibles looted from non-player enemies"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Items_Sold_Med_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_ITEMS_SOLD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collectibles sold to Madam Nazar",
+              "localizedFull": "0/2 Collectibles sold to Madam Nazar"
+            }
+          }
+        ]
+      },
+      {
+        "id": "6f5e8d8aa9d440cb9efb1d7e28324cbb",
+        "templateId": "FEATURE_PM_DAILY_ROLE_MOONSHINER_CHALLENGES",
+        "role": "CHARACTER_RANK_MOONSHINER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Moonshiner_Band_Played_Med_00",
+            "desiredGoal": 60000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_MS_TO_MINUTES",
+            "description": {
+              "label": "MPRC_MOONSHINER_BAND_PLAYED_MED",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Played with a band for 1 min",
+              "localizedFull": "0/1 Played with a band for 1 min"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Craft_Poison_Bottle_Med_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_MOONSHINER_CRAFT_POISON_BOTTLE",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Crafted Toxic Moonshine",
+              "localizedFull": "0/1 Crafted Toxic Moonshine"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Story_Mission_Completed_Med_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_MOONSHINER_STORY_MISSION_COMPLETED",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Moonshine Story Mission completed",
+              "localizedFull": "0/1 Moonshine Story Mission completed"
+            }
+          }
+        ]
+      },
+      {
+        "id": "2c98f4b235b64829a5cc0310af0f3335",
+        "templateId": "FEATURE_PM_DAILY_ROLE_NATURALIST_CHALLENGES",
+        "role": "CHARACTER_RANK_NATURALIST",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Naturalist_Crafted_Blending_Tonic_Med_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_CRAFTED_BLENDING_TONIC",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Blending Tonics crafted or used",
+              "localizedFull": "0/1 Blending Tonics crafted or used"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Crafted_Wilderness_Camp_Med_00",
+            "desiredGoal": 5,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_CRAFTED_COOKED_WILDERNESS_CAMP",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Crafted or cooked at Wilderness Camp",
+              "localizedFull": "0/5 Crafted or cooked at Wilderness Camp"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Photo_Animal_Legendary_Med_00",
+            "desiredGoal": 1,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_PHOTO_ANIMAL_LEGENDARY",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Legendary Animals photographed",
+              "localizedFull": "0/1 Legendary Animals photographed"
+            }
+          }
+        ]
+      }
+    ],
+    "hard": [
+      {
+        "id": "6b3461dad44c4265b57cbe766fc2517f",
+        "templateId": "FEATURE_PM_DAILY_ROLE_BOUNTY_HUNTER_CHALLENGES",
+        "role": "CHARACTER_RANK_BOUNTY_HUNTER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Bounty_General_Delivered_Timed_Hard_00",
+            "desiredGoal": 300000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_AS_BOOL",
+            "description": {
+              "label": "MPRC_BOUNTY_GENERAL_DELIVERED_TIMED_HARD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty hunt completed with 5 min or more left",
+              "localizedFull": "0/1 Bounty hunt completed with 5 min or more left"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_Used_Lasso_Horseback_Hard_00",
+            "desiredGoal": 3,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_USED_LASSO_HORSEBACK",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty targets lassoed from horseback",
+              "localizedFull": "0/3 Bounty targets lassoed from horseback"
+            }
+          },
+          {
+            "id": "MPRC_Bounty_Used_Tracking_Arrow_Hard_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_BOUNTY_USED_TRACK_ARROW",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Bounty targets tagged with Tracking Arrow",
+              "localizedFull": "0/2 Bounty targets tagged with Tracking Arrow"
+            }
+          }
+        ]
+      },
+      {
+        "id": "d1b4535e4f834073ab266a09740a6076",
+        "templateId": "FEATURE_PM_DAILY_ROLE_TRADER_CHALLENGES",
+        "role": "CHARACTER_RANK_TRADER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Trader_Goods_Sold_Local_Hard_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_GOODS_SOLD_LOCAL",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Goods sold to local buyer",
+              "localizedFull": "0/2 Goods sold to local buyer"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Supplies_Donated_Animal_Large_Hard_00",
+            "desiredGoal": 6,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_TRADER_SUPPLIES_DONATED_ANIMAL_LARGE",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Large animal carcasses donated to Cripps",
+              "localizedFull": "0/6 Large animal carcasses donated to Cripps"
+            }
+          },
+          {
+            "id": "MPRC_Trader_Travel_Wagon_Hard_00",
+            "desiredGoal": 4827.5,
+            "goalType": "FLOAT",
+            "displayType": "DISPLAY_FEET",
+            "description": {
+              "label": "MPRC_TRADER_TRAVEL_WAGON",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Distance Delivery Wagon traveled on mission",
+              "localizedFull": "0/15838 Distance Delivery Wagon traveled on mission"
+            }
+          }
+        ]
+      },
+      {
+        "id": "9deca1419957482f8f98e1d9c3af7555",
+        "templateId": "FEATURE_PM_DAILY_ROLE_COLLECTOR_CHALLENGES",
+        "role": "CHARACTER_RANK_COLLECTOR",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Collector_Used_Maps_Hard_00",
+            "desiredGoal": 3,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_USED_MAP",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collector Maps used",
+              "localizedFull": "0/3 Collector Maps used"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Used_Metal_Detector_Hard_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_USED_METAL_DECTECTOR",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Collectibles found with a Metal Detector",
+              "localizedFull": "0/2 Collectibles found with a Metal Detector"
+            }
+          },
+          {
+            "id": "MPRC_Collector_Wild_Flowers_Found_Hard_00",
+            "desiredGoal": 3,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_COLLECTOR_WILD_FLOWERS_FOUND",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "American Wild Flowers found",
+              "localizedFull": "0/3 American Wild Flowers found"
+            }
+          }
+        ]
+      },
+      {
+        "id": "2dd8bd69a0e94027b77174069ee1e198",
+        "templateId": "FEATURE_PM_DAILY_ROLE_MOONSHINER_CHALLENGES",
+        "role": "CHARACTER_RANK_MOONSHINER",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Moonshiner_Band_Played_Hard_00",
+            "desiredGoal": 120000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_MS_TO_MINUTES",
+            "description": {
+              "label": "MPRC_MOONSHINER_BAND_PLAYED_HARD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Played with a band for 2 mins",
+              "localizedFull": "0/2 Played with a band for 2 mins"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Moonshine_Sold_Buyer_Condition_Hard_00",
+            "desiredGoal": 18,
+            "goalType": "INT",
+            "displayType": "DISPLAY_AS_BOOL",
+            "description": {
+              "label": "MPRC_MOONSHINER_MOONSHINE_SOLD_BUYER_CONDITION_HARD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Moonshine sold with at least 18 bottles intact",
+              "localizedFull": "0/1 Moonshine sold with at least 18 bottles intact"
+            }
+          },
+          {
+            "id": "MPRC_Moonshiner_Moonshine_Sold_Buyer_Timed_Hard_00",
+            "desiredGoal": 287000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_AS_BOOL",
+            "description": {
+              "label": "MPRC_MOONSHINER_MOONSHINE_SOLD_BUYER_TIMED_HARD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Moonshine sold with 5 mins left",
+              "localizedFull": "0/1 Moonshine sold with 5 mins left"
+            }
+          }
+        ]
+      },
+      {
+        "id": "d1f36e545bf34cb18a06a76b3470587f",
+        "templateId": "FEATURE_PM_DAILY_ROLE_NATURALIST_CHALLENGES",
+        "role": "CHARACTER_RANK_NATURALIST",
+        "startTime": 1793340000,
+        "endTime": 1793426400,
+        "challenges": [
+          {
+            "id": "MPRC_Naturalist_Animals_NotKilled_Timed_Hard_00",
+            "desiredGoal": 2880000,
+            "goalType": "INT",
+            "displayType": "DISPLAY_AS_BOOL",
+            "description": {
+              "label": "MPRC_NATURALIST_DONT_KILL_ANIMALS_HARD",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Don't kill an animal for 24 game hours",
+              "localizedFull": "0/1 Don't kill an animal for 24 game hours"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Crafted_Wilderness_Camp_Hard_00",
+            "desiredGoal": 7,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_CRAFTED_COOKED_WILDERNESS_CAMP",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Crafted or cooked at Wilderness Camp",
+              "localizedFull": "0/7 Crafted or cooked at Wilderness Camp"
+            }
+          },
+          {
+            "id": "MPRC_Naturalist_Tranq_Animal_Revived_Hard_00",
+            "desiredGoal": 2,
+            "goalType": "INT",
+            "displayType": "DISPLAY_DEFAULT",
+            "description": {
+              "label": "MPRC_NATURALIST_TRANQ_ANIMAL_REVIVED",
+              "formatLabel": "ACMP_DC_PLAYER_MENU",
+              "localized": "Sedated animals revived",
+              "localizedFull": "0/2 Sedated animals revived"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
