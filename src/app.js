@@ -10,6 +10,8 @@ import {
 const ENDPOINTS = {
   dailies: 'https://pepegapi.jeanropke.net/v3/rdo/dailies',
   nazar: 'https://pepegapi.jeanropke.net/v2/rdo/nazar',
+  mirrorDailies: './data/live/dailies.json',
+  mirrorNazar: './data/live/nazar.json',
   rdoGgDailies: 'https://api.rdo.gg/challenges/hard.json',
   rdoGgNazar: 'https://api.rdo.gg/nazar',
   translations: 'https://jeanropke.github.io/RDOMap/langs/ko.json',
@@ -130,7 +132,7 @@ async function loadPrimaryResult(staticData) {
 }
 
 async function loadBackupResult(staticData) {
-  setStatus('기본 데이터가 비어 있어 대체 소스를 확인하고 있습니다.', 'loading');
+  setStatus('동기화 데이터도 준비되지 않아 추가 대체 소스를 확인하고 있습니다.', 'loading');
   const [challengePayload, nazarPayload] = await Promise.all([
     fetchJson(ENDPOINTS.rdoGgDailies, 'RDO.GG 오늘의 도전 API', { fresh: true }),
     fetchJson(ENDPOINTS.rdoGgNazar, 'RDO.GG 마담 나자르 API', { fresh: true })
@@ -141,6 +143,15 @@ async function loadBackupResult(staticData) {
     staticData.translations
   );
   return buildResult(dailyData, nazarData, staticData, 'rdo-gg');
+}
+
+async function loadMirrorResult(staticData) {
+  setStatus('기본 데이터가 비어 있어 동기화 데이터를 확인하고 있습니다.', 'loading');
+  const [dailyData, nazarData] = await Promise.all([
+    fetchJson(ENDPOINTS.mirrorDailies, '동기화된 오늘의 도전', { fresh: true }),
+    fetchJson(ENDPOINTS.mirrorNazar, '동기화된 마담 나자르', { fresh: true })
+  ]);
+  return buildResult(dailyData, nazarData, staticData, 'github-mirror');
 }
 
 function isRetryableLiveError(error) {
@@ -164,14 +175,26 @@ async function loadCurrentPost() {
       return await loadPrimaryResult(staticData);
     } catch (error) {
       primaryError = error;
-      console.warn('기본 API를 사용할 수 없어 RDO.GG로 전환합니다.', error);
+      console.warn('기본 API를 사용할 수 없어 동기화 데이터로 전환합니다.', error);
+    }
+
+    let mirrorError = null;
+    try {
+      return await loadMirrorResult(staticData);
+    } catch (error) {
+      mirrorError = error;
+      console.warn('동기화 데이터를 사용할 수 없어 RDO.GG로 전환합니다.', error);
     }
 
     try {
       return await loadBackupResult(staticData);
     } catch (error) {
       lastError = error;
-      console.warn('RDO.GG 대체 API도 아직 사용할 수 없습니다.', { primaryError, backupError: error });
+      console.warn('RDO.GG 대체 API도 아직 사용할 수 없습니다.', {
+        primaryError,
+        mirrorError,
+        backupError: error
+      });
       if (!isRetryableLiveError(error) || attempt === MAX_LIVE_ATTEMPTS) {
         throw error;
       }
@@ -189,7 +212,11 @@ function renderResult(result) {
   currentResult = { model, rules, fragmentHtml, plainText };
 
   elements.post.innerHTML = fragmentHtml;
-  const sourceText = source === 'rdo-gg' ? ' · 대체 소스 RDO.GG' : '';
+  const sourceText = source === 'github-mirror'
+    ? ' · 동기화 소스 RDO Dailies'
+    : source === 'rdo-gg'
+      ? ' · 대체 소스 RDO.GG'
+      : '';
   elements.meta.textContent = `데이터 ${model.date} · 나자르 ${model.nazarLocation} · 생성 ${model.generatedAtKst} KST${sourceText}`;
   if (model.fallbacks.length > 0) {
     const fallbackNames = model.fallbacks.map((entry) => entry.text).join(', ');

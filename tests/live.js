@@ -60,20 +60,29 @@ await check('라이브 API와 정적 데이터 CORS 로드', async () => {
     ]);
     model = buildPostModel({ dailyData, nazarData, translations, challengeData, rules, now: new Date() });
   } catch {
-    const [challengePayload, nazarPayload] = await Promise.all([
-      fetchJson('https://api.rdo.gg/challenges/hard.json'),
-      fetchJson('https://api.rdo.gg/nazar')
-    ]);
-    const adapted = adaptRdoGgLiveData(challengePayload, nazarPayload, translations);
-    model = buildPostModel({
-      dailyData: adapted.dailyData,
-      nazarData: adapted.nazarData,
-      translations,
-      challengeData,
-      rules,
-      now: new Date()
-    });
-    liveSource = 'rdo-gg';
+    try {
+      const [dailyData, nazarData] = await Promise.all([
+        fetchJson('../data/live/dailies.json'),
+        fetchJson('../data/live/nazar.json')
+      ]);
+      model = buildPostModel({ dailyData, nazarData, translations, challengeData, rules, now: new Date() });
+      liveSource = 'github-mirror';
+    } catch {
+      const [challengePayload, nazarPayload] = await Promise.all([
+        fetchJson('https://api.rdo.gg/challenges/hard.json'),
+        fetchJson('https://api.rdo.gg/nazar')
+      ]);
+      const adapted = adaptRdoGgLiveData(challengePayload, nazarPayload, translations);
+      model = buildPostModel({
+        dailyData: adapted.dailyData,
+        nazarData: adapted.nazarData,
+        translations,
+        challengeData,
+        rules,
+        now: new Date()
+      });
+      liveSource = 'rdo-gg';
+    }
   }
   if (model.date !== getExpectedApiDate(new Date())) {
     throw new Error(`날짜 불일치: ${model.date}`);
