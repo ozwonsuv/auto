@@ -8,8 +8,8 @@ on:
       - .github/workflows/refresh-public-data.yml
       - tools/sync-live-data.mjs
   schedule:
-    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 6 * * *'
-    - cron: '7,22,37,52 7-8 * * *'
+    - cron: '47,53,58 5 * * *'
+    - cron: '6,14,23,33,44,54 6-9 * * *'
 
 permissions:
   contents: write
@@ -21,13 +21,13 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 26
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Fetch and validate current data
-        run: node tools/sync-live-data.mjs
+        run: node tools/sync-live-data.mjs --wait-for-reset --retry
 
       - name: Publish changed data
         shell: bash

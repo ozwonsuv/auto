@@ -3,6 +3,10 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RESET_HOUR_UTC = 6;
+const RESET_SETTLE_DELAY_MS = 15 * 1000;
+const PRE_RESET_WAIT_WINDOW_MS = 15 * 60 * 1000;
+const RETRY_WINDOW_MS = 12 * 60 * 1000;
+const RETRY_DELAY_MS = 30 * 1000;
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUTS = {
   dailies: resolve(ROOT, 'data/live/dailies.json'),
@@ -17,6 +21,34 @@ function expectedGameDate(now = new Date()) {
   return new Date(now.getTime() - RESET_HOUR_UTC * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10);
+}
+
+function sleep(milliseconds) {
+  return new Promise((resolveSleep) => setTimeout(resolveSleep, milliseconds));
+}
+
+function millisecondsUntilTodayReset(now = new Date()) {
+  const reset = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    RESET_HOUR_UTC,
+    0,
+    0
+  ) + RESET_SETTLE_DELAY_MS;
+  return reset - now.getTime();
+}
+
+async function waitForResetIfClose() {
+  if (!process.argv.includes('--wait-for-reset')) {
+    return;
+  }
+
+  const waitTime = millisecondsUntilTodayReset();
+  if (waitTime > 0 && waitTime <= PRE_RESET_WAIT_WINDOW_MS) {
+    console.log(`Waiting ${Math.ceil(waitTime / 1000)} seconds for the daily reset`);
+    await sleep(waitTime);
+  }
 }
 
 async function readJson(path) {
@@ -104,8 +136,10 @@ async function writeJsonIfChanged(path, value) {
 }
 
 async function main() {
+  await waitForResetIfClose();
   const expectedDate = expectedGameDate();
   const force = process.env.FORCE_SYNC === '1';
+  const retry = process.argv.includes('--retry');
   const [currentDailies, currentNazar] = await Promise.all([
     readJson(OUTPUTS.dailies),
     readJson(OUTPUTS.nazar)
@@ -122,20 +156,32 @@ async function main() {
     }
   }
 
-  const [dailies, nazar] = await Promise.all([
-    fetchJson(ENDPOINTS.dailies, 'Daily data'),
-    fetchJson(ENDPOINTS.nazar, 'Nazar data')
-  ]);
-  validateDailies(dailies, expectedDate);
-  validateNazar(nazar, expectedDate);
+  const retryDeadline = Date.now() + RETRY_WINDOW_MS;
+  while (true) {
+    try {
+      const [dailies, nazar] = await Promise.all([
+        fetchJson(ENDPOINTS.dailies, 'Daily data'),
+        fetchJson(ENDPOINTS.nazar, 'Nazar data')
+      ]);
+      validateDailies(dailies, expectedDate);
+      validateNazar(nazar, expectedDate);
 
-  const changes = await Promise.all([
-    writeJsonIfChanged(OUTPUTS.dailies, dailies),
-    writeJsonIfChanged(OUTPUTS.nazar, nazar)
-  ]);
-  console.log(changes.some(Boolean)
-    ? `Updated live data for ${expectedDate}`
-    : `Live data content is unchanged for ${expectedDate}`);
+      const changes = await Promise.all([
+        writeJsonIfChanged(OUTPUTS.dailies, dailies),
+        writeJsonIfChanged(OUTPUTS.nazar, nazar)
+      ]);
+      console.log(changes.some(Boolean)
+        ? `Updated live data for ${expectedDate}`
+        : `Live data content is unchanged for ${expectedDate}`);
+      return;
+    } catch (error) {
+      if (!retry || Date.now() + RETRY_DELAY_MS > retryDeadline) {
+        throw error;
+      }
+      console.warn(`${error.message}. Retrying in ${RETRY_DELAY_MS / 1000} seconds`);
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
 }
 
 await main();
