@@ -14,12 +14,22 @@
     const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
     try {
-      await new Promise((resolve, reject) => {
-        frame.addEventListener('load', resolve, { once: true });
-        setTimeout(() => reject(new Error('앱 로드 시간 초과')), 10000);
-      });
-      const documentInFrame = frame.contentDocument;
-      const generateButton = documentInFrame.querySelector('#generateButton');
+      let documentInFrame = null;
+      let generateButton = null;
+      for (let attempt = 0; attempt < 100 && !generateButton; attempt += 1) {
+        await wait(100);
+        documentInFrame = frame.contentDocument;
+        generateButton = documentInFrame?.querySelector('#generateButton') ?? null;
+      }
+      if (!documentInFrame || !generateButton) {
+        throw new Error('앱 로드 시간 초과');
+      }
+      for (let attempt = 0; attempt < 100 && generateButton.disabled; attempt += 1) {
+        await wait(100);
+      }
+      if (generateButton.disabled) {
+        throw new Error('오늘 생성 버튼 준비 시간 초과');
+      }
       generateButton.click();
 
       let completed = false;

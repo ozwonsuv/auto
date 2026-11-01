@@ -308,4 +308,6 @@ elements.copyTitle.addEventListener('click', copyTitle);
 elements.copyBody.addEventListener('click', copyBody);
 
 setCopyButtonsEnabled(false);
+elements.generate.disabled = false;
+elements.generate.textContent = '오늘 생성';
 setStatus(`기준 날짜 ${getExpectedApiDate(new Date())}. 오늘 생성을 눌러 주세요.`);
