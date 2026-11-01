@@ -7,6 +7,7 @@ import {
   getExpectedApiDate,
   normalizeGoalDisplay,
   normalizeText,
+  parseReaderJson,
   resolveChallengeText
 } from '../src/core.js';
 
@@ -59,6 +60,15 @@ await test('문구와 목표값 정규화', () => {
 await test('한국 시간 15시 경계 날짜', () => {
   assert(getExpectedApiDate(new Date('2026-08-19T05:59:59Z')) === '2026-08-18', '15시 직전 날짜 오류');
   assert(getExpectedApiDate(new Date('2026-08-19T06:00:00Z')) === '2026-08-19', '15시 정각 날짜 오류');
+});
+
+await test('실시간 중계 응답에서 JSON 추출', () => {
+  const parsed = parseReaderJson(
+    'Title: data\n\nMarkdown Content:\n{"date":"2026-11-01","nazar":"MPSW_LOCATION_07"}',
+    '테스트 중계'
+  );
+  assert(parsed.date === '2026-11-01', '중계 날짜 추출 실패');
+  assert(parsed.nazar === 'MPSW_LOCATION_07', '중계 나자르 추출 실패');
 });
 
 await test('RDO.GG 대체 응답을 기존 도전 형식으로 변환', () => {

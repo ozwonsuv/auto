@@ -7,6 +7,25 @@ export class DataSourceError extends Error {
   }
 }
 
+export function parseReaderJson(raw, label = '실시간 중계') {
+  const text = String(raw ?? '');
+  const marker = 'Markdown Content:';
+  const markerIndex = text.indexOf(marker);
+  const content = markerIndex >= 0 ? text.slice(markerIndex + marker.length) : text;
+  const start = content.indexOf('{');
+  const end = content.lastIndexOf('}');
+
+  if (start < 0 || end < start) {
+    throw new Error(`${label} 응답에서 JSON을 찾을 수 없습니다.`);
+  }
+
+  try {
+    return JSON.parse(content.slice(start, end + 1));
+  } catch {
+    throw new Error(`${label} 응답의 JSON 형식이 올바르지 않습니다.`);
+  }
+}
+
 const SECTION_ORDER = [
   'general',
   'bounty_hunter',

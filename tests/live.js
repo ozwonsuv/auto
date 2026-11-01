@@ -2,7 +2,8 @@ import {
   adaptRdoGgLiveData,
   buildPostFragmentHtml,
   buildPostModel,
-  getExpectedApiDate
+  getExpectedApiDate,
+  parseReaderJson
 } from '../src/core.js';
 
 const summary = document.querySelector('#summary');
@@ -16,6 +17,15 @@ async function fetchJson(url) {
     throw new Error(`${url}: HTTP ${response.status}`);
   }
   return response.json();
+}
+
+async function fetchLiveJson(url) {
+  const separator = url.includes('?') ? '&' : '?';
+  const response = await fetch(`${url}${separator}ts=${Date.now()}`, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`${url}: HTTP ${response.status}`);
+  }
+  return parseReaderJson(await response.text(), url);
 }
 
 async function check(name, callback) {
@@ -62,11 +72,11 @@ await check('라이브 API와 정적 데이터 CORS 로드', async () => {
   } catch {
     try {
       const [dailyData, nazarData] = await Promise.all([
-        fetchJson('../data/live/dailies.json'),
-        fetchJson('../data/live/nazar.json')
+        fetchLiveJson('https://r.jina.ai/http://rdo-dailies.com/api/RDO/general/daily_challenges'),
+        fetchLiveJson('https://r.jina.ai/http://rdo-dailies.com/api/RDO/collector/nazar_location')
       ]);
       model = buildPostModel({ dailyData, nazarData, translations, challengeData, rules, now: new Date() });
-      liveSource = 'github-mirror';
+      liveSource = 'rdo-dailies-live';
     } catch {
       const [challengePayload, nazarPayload] = await Promise.all([
         fetchJson('https://api.rdo.gg/challenges/hard.json'),

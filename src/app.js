@@ -4,34 +4,21 @@ import {
   buildPlainText,
   buildPostFragmentHtml,
   buildPostModel,
-  getExpectedApiDate
+  getExpectedApiDate,
+  parseReaderJson
 } from './core.js';
 
 const ENDPOINTS = {
   dailies: 'https://pepegapi.jeanropke.net/v3/rdo/dailies',
   nazar: 'https://pepegapi.jeanropke.net/v2/rdo/nazar',
-  mirrorDailies: './data/live/dailies.json',
-  mirrorNazar: './data/live/nazar.json',
+  liveDailies: 'https://r.jina.ai/http://rdo-dailies.com/api/RDO/general/daily_challenges',
+  liveNazar: 'https://r.jina.ai/http://rdo-dailies.com/api/RDO/collector/nazar_location',
   rdoGgDailies: 'https://api.rdo.gg/challenges/hard.json',
   rdoGgNazar: 'https://api.rdo.gg/nazar',
   translations: 'https://jeanropke.github.io/RDOMap/langs/ko.json',
   challenges: './data/challenges.json',
   rules: './data/rules.json'
 };
-
-const MAX_LIVE_ATTEMPTS = 7;
-const RETRY_DELAY_MS = 10000;
-const RETRYABLE_DATA_CODES = new Set([
-  'UPSTREAM_NOT_READY',
-  'INCOMPLETE_DAILIES',
-  'INCOMPLETE_NAZAR',
-  'INCOMPLETE_ROLES',
-  'INCOMPLETE_RDO_GG_TIME',
-  'INCOMPLETE_RDO_GG_CHALLENGE',
-  'INCOMPLETE_RDO_GG_DAILIES',
-  'INCOMPLETE_RDO_GG_NAZAR',
-  'INCOMPLETE_RDO_GG_ROLES'
-]);
 
 const elements = {
   generate: document.querySelector('#generateButton'),
@@ -57,13 +44,13 @@ function setCopyButtonsEnabled(enabled) {
   elements.copyBody.disabled = !enabled;
 }
 
-function sleep(milliseconds) {
-  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
-}
-
-async function fetchJson(url, label, { fresh = false } = {}) {
+async function fetchText(
+  url,
+  label,
+  { fresh = false, accept = 'application/json', timeoutMs = 15000 } = {}
+) {
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 15000);
+  const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
   const separator = url.includes('?') ? '&' : '?';
   const requestUrl = fresh ? `${url}${separator}ts=${Date.now()}` : url;
 
@@ -71,25 +58,38 @@ async function fetchJson(url, label, { fresh = false } = {}) {
     const response = await fetch(requestUrl, {
       cache: fresh ? 'no-store' : 'no-cache',
       signal: controller.signal,
-      headers: { Accept: 'application/json' }
+      headers: { Accept: accept }
     });
     if (!response.ok) {
       throw new Error(`${label} 요청 실패 (HTTP ${response.status})`);
     }
-    const raw = await response.text();
-    try {
-      return JSON.parse(raw);
-    } catch {
-      throw new Error(`${label} 응답이 올바른 JSON이 아닙니다.`);
-    }
+    return await response.text();
   } catch (error) {
     if (error.name === 'AbortError') {
-      throw new Error(`${label} 응답 시간이 15초를 넘었습니다.`);
+      throw new Error(`${label} 응답 시간이 ${Math.round(timeoutMs / 1000)}초를 넘었습니다.`);
     }
     throw error;
   } finally {
     window.clearTimeout(timeout);
   }
+}
+
+async function fetchJson(url, label, options = {}) {
+  const raw = await fetchText(url, label, options);
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new Error(`${label} 응답이 올바른 JSON이 아닙니다.`);
+  }
+}
+
+async function fetchLiveJson(url, label) {
+  const raw = await fetchText(url, label, {
+    fresh: true,
+    accept: 'text/plain',
+    timeoutMs: 20000
+  });
+  return parseReaderJson(raw, label);
 }
 
 function loadStaticData() {
@@ -132,7 +132,7 @@ async function loadPrimaryResult(staticData) {
 }
 
 async function loadBackupResult(staticData) {
-  setStatus('동기화 데이터도 준비되지 않아 추가 대체 소스를 확인하고 있습니다.', 'loading');
+  setStatus('추가 실시간 소스를 확인하고 있습니다.', 'loading');
   const [challengePayload, nazarPayload] = await Promise.all([
     fetchJson(ENDPOINTS.rdoGgDailies, 'RDO.GG 오늘의 도전 API', { fresh: true }),
     fetchJson(ENDPOINTS.rdoGgNazar, 'RDO.GG 마담 나자르 API', { fresh: true })
@@ -145,64 +145,45 @@ async function loadBackupResult(staticData) {
   return buildResult(dailyData, nazarData, staticData, 'rdo-gg');
 }
 
-async function loadMirrorResult(staticData) {
-  setStatus('기본 데이터가 비어 있어 동기화 데이터를 확인하고 있습니다.', 'loading');
+async function loadLiveResult(staticData) {
+  setStatus('실시간 원천에서 오늘 데이터를 불러오고 있습니다.', 'loading');
   const [dailyData, nazarData] = await Promise.all([
-    fetchJson(ENDPOINTS.mirrorDailies, '동기화된 오늘의 도전', { fresh: true }),
-    fetchJson(ENDPOINTS.mirrorNazar, '동기화된 마담 나자르', { fresh: true })
+    fetchLiveJson(ENDPOINTS.liveDailies, '실시간 오늘의 도전'),
+    fetchLiveJson(ENDPOINTS.liveNazar, '실시간 마담 나자르')
   ]);
-  return buildResult(dailyData, nazarData, staticData, 'github-mirror');
-}
-
-function isRetryableLiveError(error) {
-  return !(error instanceof DataSourceError) || RETRYABLE_DATA_CODES.has(error.code);
+  return buildResult(dailyData, nazarData, staticData, 'rdo-dailies-live');
 }
 
 async function loadCurrentPost() {
   const staticData = await loadStaticData();
-  let lastError = null;
+  setStatus('최신 오늘의 도전과 나자르 위치를 확인하고 있습니다.', 'loading');
 
-  for (let attempt = 1; attempt <= MAX_LIVE_ATTEMPTS; attempt += 1) {
-    setStatus(
-      attempt === 1
-        ? '최신 오늘의 도전과 나자르 위치를 확인하고 있습니다.'
-        : `최신 데이터 반영을 기다리는 중입니다. ${attempt}/${MAX_LIVE_ATTEMPTS}`,
-      'loading'
-    );
-
-    let primaryError = null;
-    try {
-      return await loadPrimaryResult(staticData);
-    } catch (error) {
-      primaryError = error;
-      console.warn('기본 API를 사용할 수 없어 동기화 데이터로 전환합니다.', error);
-    }
-
-    let mirrorError = null;
-    try {
-      return await loadMirrorResult(staticData);
-    } catch (error) {
-      mirrorError = error;
-      console.warn('동기화 데이터를 사용할 수 없어 RDO.GG로 전환합니다.', error);
-    }
-
-    try {
-      return await loadBackupResult(staticData);
-    } catch (error) {
-      lastError = error;
-      console.warn('RDO.GG 대체 API도 아직 사용할 수 없습니다.', {
-        primaryError,
-        mirrorError,
-        backupError: error
-      });
-      if (!isRetryableLiveError(error) || attempt === MAX_LIVE_ATTEMPTS) {
-        throw error;
-      }
-      await sleep(RETRY_DELAY_MS);
-    }
+  let primaryError = null;
+  try {
+    return await loadPrimaryResult(staticData);
+  } catch (error) {
+    primaryError = error;
+    console.warn('기본 API를 사용할 수 없어 실시간 원천으로 전환합니다.', error);
   }
 
-  throw lastError ?? new Error('오늘의 도전 생성에 실패했습니다.');
+  let liveError = null;
+  try {
+    return await loadLiveResult(staticData);
+  } catch (error) {
+    liveError = error;
+    console.warn('실시간 원천을 사용할 수 없어 RDO.GG로 전환합니다.', error);
+  }
+
+  try {
+    return await loadBackupResult(staticData);
+  } catch (backupError) {
+    console.warn('모든 실시간 원천을 사용할 수 없습니다.', {
+      primaryError,
+      liveError,
+      backupError
+    });
+    throw liveError ?? backupError;
+  }
 }
 
 function renderResult(result) {
@@ -212,8 +193,8 @@ function renderResult(result) {
   currentResult = { model, rules, fragmentHtml, plainText };
 
   elements.post.innerHTML = fragmentHtml;
-  const sourceText = source === 'github-mirror'
-    ? ' · 동기화 소스 RDO Dailies'
+  const sourceText = source === 'rdo-dailies-live'
+    ? ' · 실시간 소스 RDO Dailies'
     : source === 'rdo-gg'
       ? ' · 대체 소스 RDO.GG'
       : '';
