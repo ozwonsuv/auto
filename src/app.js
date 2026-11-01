@@ -6,7 +6,7 @@ import {
   buildPostModel,
   getExpectedApiDate,
   parseReaderJson
-} from './core.js';
+} from './core.js?v=20261101-1';
 
 const ENDPOINTS = {
   dailies: 'https://pepegapi.jeanropke.net/v3/rdo/dailies',
