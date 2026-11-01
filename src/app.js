@@ -156,22 +156,22 @@ async function loadLiveResult(staticData) {
 
 async function loadCurrentPost() {
   const staticData = await loadStaticData();
-  setStatus('최신 오늘의 도전과 나자르 위치를 확인하고 있습니다.', 'loading');
-
-  let primaryError = null;
-  try {
-    return await loadPrimaryResult(staticData);
-  } catch (error) {
-    primaryError = error;
-    console.warn('기본 API를 사용할 수 없어 실시간 원천으로 전환합니다.', error);
-  }
+  setStatus('실시간 원천에서 오늘 데이터를 불러오고 있습니다.', 'loading');
 
   let liveError = null;
   try {
     return await loadLiveResult(staticData);
   } catch (error) {
     liveError = error;
-    console.warn('실시간 원천을 사용할 수 없어 RDO.GG로 전환합니다.', error);
+    console.warn('실시간 원천을 사용할 수 없어 기본 API로 전환합니다.', error);
+  }
+
+  let primaryError = null;
+  try {
+    return await loadPrimaryResult(staticData);
+  } catch (error) {
+    primaryError = error;
+    console.warn('기본 API를 사용할 수 없어 RDO.GG로 전환합니다.', error);
   }
 
   try {
@@ -182,7 +182,7 @@ async function loadCurrentPost() {
       liveError,
       backupError
     });
-    throw liveError ?? backupError;
+    throw liveError ?? primaryError ?? backupError;
   }
 }
 
@@ -227,7 +227,7 @@ async function generatePost() {
   } catch (error) {
     console.error(error);
     const message = error instanceof DataSourceError ? error.message : `불러오기 실패: ${error.message}`;
-    setStatus(`${message} 잠시 후 다시 눌러 주세요.`, 'error');
+    setStatus(message, 'error');
   } finally {
     elements.generate.disabled = false;
     elements.generate.textContent = '오늘 생성';
